@@ -5,9 +5,11 @@ Some classes in this repository are direct copies from the book, while others we
 
 ## Classes developed by me
 
-* **AcessModifiersTraining** - This class explain how we can use the access modifiers public, protected, private and default in Salesforce Apex
-* **ApexCollections** - This class illustrates some native functions of collections in Apex
-
+* **AcessModifiersTraining** - Explain how we can use the access modifiers public, protected, private and default.
+* **ApexCollections** - Illustrates some native functions of collections.
+* **ApexExceptions** - Demonstrated types of exceptions, exemples of code that trigger exceptions and the reasons behind them.
+* **ApexPrimitiveTypes** - Showcases the use of primitive types.
+* **Calculator** - Created for training in math fucntions and different ways to create test class.
 
 ## Classes that are full copies of the book
 

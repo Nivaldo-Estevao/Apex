@@ -102,14 +102,14 @@ public with sharing class ApexCollections {
         //Declaração de map através de um SELECT em um SObject
         //O Id do SObject é transformado na chave e ele mesmo é o valor
         //O id é tanto convertido na chave como também será um campo no valor
-        Map<Id, Account> foodsSearch = new Map<Id, Food__c>(
+        Map<Id, Account> foodsSearch = new Map<Id, Account>(
             [SELECT Id, Name 
             FROM Account]
         );    
 
         //Método para inserir chave/valor dentro
-        foods.add(0,'meat');
-        foods.add(1,'milk');
+        foods.put(0,'meat');
+        foods.put(1,'milk');
 
         //Método que retorna um set com todas as chaves
         Set<Integer> keys = foods.keySet();

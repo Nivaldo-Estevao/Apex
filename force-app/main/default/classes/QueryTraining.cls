@@ -4,7 +4,7 @@ public with sharing class QueryTraining {
 
     //Exemplo de query ordenada por um campo colocando os camps null por último
     //Se quiser que os nulls apareçam primeiro basta colocar NULLS FIRST
-    List<Account>  accountsNullsLast = [SELECT Id, Name FROM Account ORDER BY Name NULLS LAST]
+    List<Account>  accountsNullsLast = [SELECT Id, Name FROM Account ORDER BY Name NULLS LAST];
 
     //Exemplo de query que pula os primeiros 3 registros da consulta (OFFSET)
     List<Contact> contactsJumpThree = [SELECT Id, Name FROM Contact LIMIT 5 OFFSET 3];
@@ -29,7 +29,7 @@ public with sharing class QueryTraining {
     //Exemplo de query agrupada por grupo
     //A função agregada é usada para identificar quantos registros existem, por isso o campo ID
     //AggregateReslt é o objeto utilizado para receber o resultado do GROUP BY
-    List<AggregateResult> accountsGrouped = [
+    List<AggregateResult> accountsGroupedByIndustry = [
         SELECT Industry, COUNT(Id) Quantity 
         FROM Account 
         GROUP BY Industry
@@ -37,6 +37,8 @@ public with sharing class QueryTraining {
 
     
     //Exemplo de query que permite o rastreio de campos visualizados para auditoria
+    //Os registros visualizados na query atualizam o campo LastViewUpdate 
+    //com o DateTime do momento da transação 
     List<Account> accountsTrack = [
         SELECT Name, CreatedDate 
         FROM Account
@@ -65,7 +67,7 @@ public with sharing class QueryTraining {
     Integer accountsGrouped = [SELECT COUNT() FROM Account];
 
     //Função COUNT(nomeCampo) retorna a quantidade de registros com o campo não nulo
-    List<AggregateResult> accountsGrouped = [SELECT COUNT(Name) FROM Account];
+    List<AggregateResult> accountsGroupedNoNull = [SELECT COUNT(Name) FROM Account];
 
     //Função COUNT(nomeCampo) pode ser usada com outras funções e GROUP BY
     //O nome que aparece após o 'COUNT(NomeCampo) nomeColuna' será o nome da coluna com o resultado
@@ -87,22 +89,47 @@ public with sharing class QueryTraining {
     //Também pode ser usada com a função COUNT() e GROUP  BY
     List<AggregateResult> minimumRevenue = [
         SELECT Industry, MIN(AnnualRevenue) MinimoFaturamentoAnual
-        FROM Account
+        FROM Account GROUP BY Industry
     ];
     
     //Função MAX(nomeCampo) retorna o valor mínimo daquele campo
     //Também pode ser usada com a função COUNT() e GROUP  BY
     List<AggregateResult> maxRevenue = [
         SELECT Industry, MAX(AnnualRevenue) MaximoFaturamentoAnual
-        FROM Account
+        FROM Account GROUP BY Industry
     ];
     
-    //Função GROUP BY ROLLUP(nomeCampo1, nomeCampo2) gera subtotais por grupo
-    List<AggregateResult> maxRevenue = [
+    //Função GROUP BY ROLLUP(nomeCampo1, nomeCampo2) gera subtotais e totais gerais por grupo
+    //Foi incrementado a ordenção por LeadSource para ajudar na visualização
+    //As linhas que possue a coluna LeadSource preennchida e Status Vazio
+    //representam o subtotal por LeadSource
+    //A linha que não possue valor no LeadSource e no Status representam o total gerral
+    List<AggregateResult> totalLeads = [
         SELECT LeadSource, Status, COUNT(Id) totalCount 
         FROM Lead 
         GROUP BY ROLLUP(LeadSource, Status)
+        ORDER BY LeadSource NULLS LAST
     ];
 
+    //Função GROUP BY CUBE(nomeCampo1, nomeCampo2) gera subtotais e totais gerais por grupo
+    //No entanto ela gera mais subtotais que o ROLLUP
+    //Neste caso ela gera o número de ocorrência iguais do campo status
+    //Indepente do LeadSource
+    //Representado na linha que possue status mas não pussui valor na coluna LeadSource
+    List<AggregateResult> totalLeadsAndStatus = [
+        SELECT LeadSource, Status, COUNT(Id) totalCount 
+        FROM Lead 
+        GROUP BY CUBE(LeadSource, Status)
+        ORDER BY LeadSource NULLS LAST
+    ];
+
+    //Função HAVING usada para filtrar o resultado de uma consulta agregada
+    //Neste caso mostra apenas os resultado de SUM(Amount) superior a 100 mil
+    List<AggregateResult> accountsOneThousend = [
+        SELECT LeadSource, SUM(Amount) totalAmount, COUNT(Id) 
+        FROM Opportunity 
+        GROUP BY LeadSource 
+        HAVING SUM(Amount) > 100000
+    ];
 
 }

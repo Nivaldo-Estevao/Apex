@@ -132,4 +132,34 @@ public with sharing class QueryTraining {
         HAVING SUM(Amount) > 100000
     ];
 
+
+    //<<<<< Operações DML >>>>>
+
+    //Exemplo simples do uso do merge com a classe Database
+    //É interessante utilizar sempre a classe Database para maior controle das operações DML
+    //Ela permite visualizar erros, processar parcialmente uma lista de registros
+    //persistindo os registros válidos e retorna erro para os registros não válidos
+    //permite também o uso do rollback
+   
+    public void mergeContacts(){
+        
+        Contact contact1 = new Contact(FirstName = 'John', LastName = 'Doe', Email = 'john.doe@example.com');
+        Contact contact2 = new Contact(FirstName = 'Jane', LastName = 'Doe', Email = 'john.doe@example.com');
+
+        // Inserindo os contatos
+        Database.SaveResult[] insertResult = Database.insert(new List<Contact>{contact1, contact2}, false);
+
+        // Mesclando os contatos
+        Database.MergeResult mergeResult = Database.merge(contact1, contact2, false);
+        
+        if (mergeResult.isSuccess()) {
+            System.debug('Contacts merged successfully.');
+        } else {
+            for (Database.Error error : mergeResult.getErrors()) {
+                System.debug('Error merging contacts: ' + error.getMessage());
+            }
+        }
+
+    }
+
 }

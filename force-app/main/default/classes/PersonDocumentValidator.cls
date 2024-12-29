@@ -29,7 +29,7 @@ public with sharing class PersonDocumentValidator {
 
     @TestVisible
     String removeMaskChars(String value){
-        return value.replace('\\.|=', '');
+        return value.replaceAll('\\.|-', '');
     }
 
     Boolean isNotNumeric(String value){

@@ -78,4 +78,68 @@ public class PersonDocumentValidatorTest {
         }
 
     }
+
+    @isTest
+    static void shouldCalculateFirstCpfDigit(){
+
+        PersonDocumentValidator validator = new PersonDocumentValidator();
+
+        String cpf = '11144477735';
+
+        List<String> digits = cpf.split('');
+
+        Integer digit = validator.calculateDigit(digits,10,9);
+
+        Assert.areEqual(3, digit);
+
+    }
+
+    @isTest
+    static void shouldCalculateSecondCpfDigit(){
+
+        PersonDocumentValidator validator = new PersonDocumentValidator();
+
+        String cpf = '11144477735';
+
+        List<String> digits = cpf.split('');
+
+        Integer digit = validator.calculateDigit(digits,11,10);
+
+        Assert.areEqual(5, digit);
+
+    }
+
+    @isTest
+    static void shouldCalculateCpfDigitWithZeroRest() {
+        
+        PersonDocumentValidator validator = new PersonDocumentValidator();
+        
+        String cpf = '86989551003';
+        
+        List<String> digits = cpf.split('');
+        
+        Integer digit = validator.calculateDigit( digits, 10, 9 );
+        
+        Assert.areEqual ( 0 , digit );
+    }
+    
+    @isTest
+    public static void shouldAcceptValidCpfNumber () {
+        
+        PersonDocumentValidator validator = new PersonDocumentValidator();
+        
+        String cpf = '331.099.440-65';
+        
+        Boolean result = validator.isCpf(cpf);
+        
+        Assert.isTrue( result, 'CPF 331.099.440-65 é um CPF válido' );
+        
+        cpf = '221.935.320-60';
+        
+        result = validator.isCpf(cpf);
+        
+        Assert.isTrue( result, 'CPF 221.935.320-60 é um CPF válido' );
+
+    }
+
 }

@@ -11,7 +11,7 @@ trigger Account on Account (before insert, before update) {
             for ( Account account : newAccounts) {     
                 
                 if ( !validator.isValid(account.DocumentNumber__c) ) {
-                    account.DocumentNumber__c.addError('Documento Iválido');
+                    account.DocumentNumber__c.addError('Documento Inválido');
                 }
             }
         }
